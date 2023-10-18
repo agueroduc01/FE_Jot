@@ -60,27 +60,27 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div
-        class="menu collapse navbar-collapse"
-        id="navbarCollapse"
-        :tabs="['userHome', 'listPost', 'viewCV']"
-        :tabSelected="tab"
-        @selected="setSelected"
-      >
+      <div class="menu collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
-          <router-link class="nav-item nav-link px-3" to="/user/user-home"
+          <router-link
+            class="nav-item nav-link px-3"
+            @click="activeHome()"
+            :class="{ active: isActiveUserHome }"
+            to="/user/user-home"
             >Trang Chủ</router-link
           >
           <router-link
-            class="nav-item nav-link text-success"
-            v-for="tab in tabs"
-            :key="tab"
-            @click="changeTab(tab, tabs)"
-            :class="{ active: tabs.includes(tab) }"
+            class="nav-item nav-link px-3 text-thin"
+            @click="activeListPost()"
+            :class="{ active: isActiveListPost }"
             to="/user/list-post"
-            ><strong>{{ tab }}</strong>
+            ><strong>Danh Sach Bai Viet</strong>
           </router-link>
-          <router-link class="nav-item nav-link" to="/user/view-cv"
+          <router-link
+            class="nav-item nav-link px-3"
+            @click="activeViewCV()"
+            :class="{ active: isActiveViewCV }"
+            to="/user/view-cv"
             >Xem CV</router-link
           >
           <nav
@@ -166,8 +166,6 @@ import { Modal } from 'usemodal-vue3';
 import autoSearch from '@/views/auto-search/auto-search.vue';
 import axios from '@/config/axios';
 import MySkill from '@/views/my-skill/my-skill.vue';
-//import { ref } from 'vue';
-//let isActive = ref(false);
 const tabs = ['viewCV', 'listPost', 'userHome'];
 export default {
   name: 'user-header',
@@ -180,8 +178,9 @@ export default {
     return {
       isVisibleAutoSearch: false,
       isVisibleMySkill: false,
-      tabSelected: 'listPost',
-      tabs: tabs,
+      isActiveUserHome: true,
+      isActiveListPost: false,
+      isActiveViewCV: false,
     };
   },
   methods: {
@@ -217,12 +216,20 @@ export default {
       this.$refs.mySkill.save();
       this.closeMySkill();
     },
-    changeTab(text, tabs) {
-      console.log('test', text, this.tabSelected, tabs);
-      this.$emit('changeTab', text, tabs);
+    activeHome() {
+      this.isActiveUserHome = true;
+      this.isActiveListPost = false;
+      this.isActiveViewCV = false;
     },
-    setSelected(tab) {
-      this.tabSelected = tab;
+    activeListPost() {
+      this.isActiveUserHome = false;
+      this.isActiveListPost = true;
+      this.isActiveViewCV = false;
+    },
+    activeViewCV() {
+      this.isActiveUserHome = false;
+      this.isActiveListPost = false;
+      this.isActiveViewCV = true;
     },
   },
 };
